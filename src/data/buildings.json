@@ -1,0 +1,29 @@
+[
+  {
+    "id": "building_c73721ad-d416-4d9a-b966-e097f02a708f",
+    "slug": "tsawwassen",
+    "name": "Tsawwassen",
+    "location": "Joyce",
+    "description": "Tsawwassen building",
+    "images": [
+      "/uploads/buildings/tsawwassen/1773950687748-building_1.jpg"
+    ],
+    "amenities": [
+      {
+        "id": "amenity_2a8abee0-c958-458a-9a6b-16e9742d540d",
+        "slug": "bbq",
+        "name": "bbq",
+        "description": "Welcome to our bbq",
+        "images": [
+          "/uploads/amenities/tsawwassen/bbq/1773951939836-bbq_1.jpg",
+          "/uploads/amenities/tsawwassen/bbq/1773951939836-bbq2.jpg"
+        ],
+        "calBookingLink": "dsenteu/bbq",
+        "createdAt": "2026-03-19T20:25:39.849Z",
+        "updatedAt": "2026-03-19T20:25:39.849Z"
+      }
+    ],
+    "createdAt": "2026-03-19T20:04:47.759Z",
+    "updatedAt": "2026-03-19T20:25:39.849Z"
+  }
+]

@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --centrum-green: #0a6d3c;
+  --centrum-green-light: #00a651;
+  --centrum-dark: #1e2a27;
+  --centrum-mint: #eef7f1;
+  --centrum-mint-deep: #d4ede0;
+  --centrum-text: #1e2a27;
+  --centrum-muted: #4a6358;
+}
+
+@theme inline {
+  --color-background: #f4faf7;
+  --color-foreground: var(--centrum-text);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair-display);
+}
+
+body {
+  background: #f4faf7;
+  color: var(--centrum-text);
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.font-display {
+  font-family: var(--font-playfair-display), Georgia, serif;
+}
+
+a,
+button {
+  cursor: pointer;
+}
+
+/* ---------- Fade-in animation ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.fade-in-2s  { animation-delay: 2.0s; }
+.fade-in-3s  { animation-delay: 3.0s; }
+.fade-in-4s  { animation-delay: 4.0s; }
+
+@keyframes staggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.stagger-in {
+  opacity: 0;
+  animation: staggerIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.font-display {
+  font-family: var(--font-playfair-display), Georgia, serif;
+}
