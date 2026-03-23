@@ -23,7 +23,7 @@ export default async function NewAmenityPage({ params }: NewAmenityPageProps) {
       <header className="bg-[#0a6d3c] px-6 py-4 shadow-lg md:px-10">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 overflow-hidden">
+            <div className="flex h-10 w-10 items-center justify-center">
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
@@ -69,6 +69,16 @@ export default async function NewAmenityPage({ params }: NewAmenityPageProps) {
                 name="description"
                 rows={4}
                 placeholder="Describe the amenity for residents..."
+                className="rounded-xl border border-[#d4ede0] bg-[#f4faf7] px-4 py-3 outline-none transition focus:border-[#0a6d3c] focus:ring-1 focus:ring-[#0a6d3c]/20"
+              />
+            </label>
+            <label className="flex flex-col gap-2 text-sm font-medium text-[#1e2a27]">
+              Terms &amp; Conditions
+              <span className="text-xs font-normal text-[#4a6358]">Optional. If set, residents must agree before they can access the booking calendar.</span>
+              <textarea
+                name="termsAndConditions"
+                rows={6}
+                placeholder="Enter any rules, restrictions, or conditions residents must agree to before booking..."
                 className="rounded-xl border border-[#d4ede0] bg-[#f4faf7] px-4 py-3 outline-none transition focus:border-[#0a6d3c] focus:ring-1 focus:ring-[#0a6d3c]/20"
               />
             </label>
