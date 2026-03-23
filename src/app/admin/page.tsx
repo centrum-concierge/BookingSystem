@@ -93,14 +93,14 @@ export default async function AdminDashboardPage() {
                         <input type="hidden" name="slug" value={building.slug} />
                         <button
                           type="submit"
-                          className="rounded-full border border-[#e0e8e4] px-3 py-1.5 text-xs font-semibold text-[#4a6358] transition duration-200 hover:border-red-300 hover:text-red-600"
+                          className="rounded-full border border-[#e0e8e4] px-3 py-2.5 text-xs font-semibold text-[#4a6358] transition duration-200 hover:border-red-300 hover:text-red-600"
                         >
                           Remove
                         </button>
                       </form>
                       <Link
                         href={`/admin/buildings/${building.slug}`}
-                        className="rounded-full bg-[#0a6d3c] px-4 py-1.5 text-xs font-semibold text-white transition duration-200 hover:bg-[#00a651]"
+                        className="rounded-full bg-[#0a6d3c] px-4 py-2.5 text-xs font-semibold text-white transition duration-200 hover:bg-[#00a651]"
                       >
                         Manage
                       </Link>

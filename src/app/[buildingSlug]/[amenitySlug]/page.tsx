@@ -33,7 +33,7 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#a8d9be]">Centrum Concierge & Security</p>
+              <p className="hidden text-xs font-semibold uppercase tracking-[0.3em] text-[#a8d9be] sm:block">Centrum Concierge & Security</p>
               <p className="text-sm font-bold text-white">Amenity Booking</p>
             </div>
           </Link>
@@ -65,7 +65,7 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
                 </div>
               ) : null}
               {amenity.images.length > 1 ? (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {amenity.images.slice(1).map((src, i) => (
                     <div key={i} className="relative aspect-square overflow-hidden rounded-[12px] bg-[#d4ede0]">
                       <Image src={src} alt={`${amenity.name} ${i + 2}`} fill className="object-cover" sizes="25vw" />
