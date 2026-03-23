@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { deleteBuildingAction } from "@/app/admin/actions";
+import { logoutAction } from "@/app/admin/login/actions";
 import { getBuildings } from "@/lib/buildings";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export default async function AdminDashboardPage() {
       <header className="bg-[#0a6d3c] px-6 py-4 shadow-lg md:px-10 lg:px-16">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 overflow-hidden">
+            <div className="flex h-10 w-10 items-center justify-center">
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
@@ -22,12 +23,22 @@ export default async function AdminDashboardPage() {
               <p className="text-sm font-bold text-white">Admin Dashboard</p>
             </div>
           </div>
-          <Link
-            href="/admin/buildings/new"
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#0a6d3c] transition duration-200 hover:bg-[#eef7f1]"
-          >
-            + Add Building
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/buildings/new"
+              className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#0a6d3c] transition duration-200 hover:bg-[#eef7f1]"
+            >
+              + Add Building
+            </Link>
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                className="rounded-full border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-white/10"
+              >
+                Log out
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 

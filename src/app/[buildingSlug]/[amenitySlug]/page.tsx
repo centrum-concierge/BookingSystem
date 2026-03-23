@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import CalEmbed from "@/components/cal-embed";
+import BookingGate from "@/components/booking-gate";
 import { getBuildingBySlug, getBuildings } from "@/lib/buildings";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,7 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
       <header className="bg-[#0a6d3c] px-6 py-5 shadow-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 overflow-hidden">
+            <div className="flex h-10 w-10 items-center justify-center">
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
@@ -95,7 +95,11 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
             </div>
             <div className="overflow-hidden rounded-[20px] bg-white shadow-[0_4px_24px_rgba(10,109,60,0.08)]">
               {amenity.calBookingLink ? (
-                <CalEmbed calLink={amenity.calBookingLink} />
+                <BookingGate
+                  calLink={amenity.calBookingLink}
+                  termsAndConditions={amenity.termsAndConditions}
+                  amenityName={amenity.name}
+                />
               ) : (
                 <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
                   <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">

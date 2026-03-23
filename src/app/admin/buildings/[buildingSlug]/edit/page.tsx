@@ -20,7 +20,7 @@ export default async function EditBuildingPage({ params }: EditBuildingPageProps
       <header className="bg-[#0a6d3c] px-6 py-4 shadow-lg md:px-10">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 overflow-hidden">
+            <div className="flex h-10 w-10 items-center justify-center">
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
