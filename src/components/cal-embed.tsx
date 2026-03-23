@@ -69,7 +69,7 @@ export default function CalEmbed({ calLink }: CalEmbedProps) {
     <div ref={embedRef}>
       <div
         id="cal-booking-embed"
-        style={{ width: "100%", height: "100%", minHeight: "600px", overflow: "scroll" }}
+        style={{ width: "100%", height: "100%", minHeight: "600px", overflowY: "auto" }}
       />
     </div>
   );

@@ -29,7 +29,7 @@ export default async function BuildingPage({ params }: BuildingPageProps) {
               <Image src="/images/logos/icon_logo.png" alt="Centrum" width={40} height={40} className="object-contain" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#a8d9be]">Centrum Concierge & Security</p>
+              <p className="hidden text-xs font-semibold uppercase tracking-[0.3em] text-[#a8d9be] sm:block">Centrum Concierge & Security</p>
               <p className="text-sm font-bold text-white">Amenity Booking</p>
             </div>
           </Link>
