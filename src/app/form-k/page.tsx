@@ -55,8 +55,8 @@ export default async function FormKPage() {
             type="text/javascript"
             src="https://forms.resolverestoration.ca/widgets/iframe.min.js"
             onLoad={() => {
-              if (typeof window !== "undefined" && window.initEmbed) {
-                window.initEmbed("contact-form-9posnx", { autoResize: true });
+              if (typeof window !== "undefined" && (window as any).initEmbed) {
+                (window as any).initEmbed("contact-form-9posnx", { autoResize: true });
               }
             }}
           ></script>
