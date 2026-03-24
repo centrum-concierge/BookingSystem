@@ -42,7 +42,7 @@ export default async function HomePage({
           {/* Banner logo */}
           <div className="mx-auto mb-10 w-full max-w-xs sm:max-w-sm md:max-w-md">
             <Image
-              src="/images/logos/cen_tran.png"
+              src="/images/logos/new_cen_logo.png"
               alt="Centrum Concierge & Security"
               width={480}
               height={180}
