@@ -1,5 +1,7 @@
+
 import Image from "next/image";
 import Link from "next/link";
+import OpenFormsEmbed from "@/components/OpenFormsEmbed";
 
 export default async function FormKPage() {
 
@@ -44,22 +46,7 @@ export default async function FormKPage() {
 
         {/* OpenForms embed */}
         <div className="mt-8">
-          <iframe
-            style={{ border: "none", width: "100%", minHeight: "900px" }}
-            id="contact-form-9posnx"
-            src="https://forms.resolverestoration.ca/forms/contact-form-9posnx"
-            title="Form K Submission"
-            allowFullScreen
-          ></iframe>
-          <script
-            type="text/javascript"
-            src="https://forms.resolverestoration.ca/widgets/iframe.min.js"
-            onLoad={() => {
-              if (typeof window !== "undefined" && (window as any).initEmbed) {
-                (window as any).initEmbed("contact-form-9posnx", { autoResize: true });
-              }
-            }}
-          ></script>
+          <OpenFormsEmbed />
         </div>
       </div>
 
