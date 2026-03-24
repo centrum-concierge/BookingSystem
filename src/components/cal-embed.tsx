@@ -22,7 +22,7 @@ export default function CalEmbed({ calLink }: CalEmbedProps) {
 
   useEffect(() => {
     (async () => {
-      const cal = await getCalApi(EMBED_JS_URL);
+      const cal = await getCalApi({ namespace, embedJsUrl: EMBED_JS_URL });
       cal("ui", {
         // Use our brand green as the Cal accent color
         cssVarsPerTheme: {
