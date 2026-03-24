@@ -25,6 +25,12 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              href="/admin/form-k"
+              className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-white/10"
+            >
+              Form K
+            </Link>
+            <Link
               href="/admin/buildings/new"
               className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#0a6d3c] transition duration-200 hover:bg-[#eef7f1]"
             >
