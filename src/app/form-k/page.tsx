@@ -42,7 +42,25 @@ export default async function FormKPage() {
           </p>
         </div>
 
-        {/* OpenForms embed goes here */}
+        {/* OpenForms embed */}
+        <div className="mt-8">
+          <iframe
+            style={{ border: "none", width: "100%", minHeight: "900px" }}
+            id="contact-form-9posnx"
+            src="https://forms.resolverestoration.ca/forms/contact-form-9posnx"
+            title="Form K Submission"
+            allowFullScreen
+          ></iframe>
+          <script
+            type="text/javascript"
+            src="https://forms.resolverestoration.ca/widgets/iframe.min.js"
+            onLoad={() => {
+              if (typeof window !== "undefined" && window.initEmbed) {
+                window.initEmbed("contact-form-9posnx", { autoResize: true });
+              }
+            }}
+          ></script>
+        </div>
       </div>
 
       <footer className="mt-10 border-t border-[#d4ede0] py-6 text-center text-xs text-[#4a6358]">
