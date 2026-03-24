@@ -27,6 +27,7 @@ export default function CalEmbed({ calLink }: CalEmbedProps) {
         // Use our brand green as the Cal accent color
         cssVarsPerTheme: {
           light: { "cal-brand": "#00a651" },
+          dark: { "cal-brand": "#00a651" },
         },
         // Hides the left panel: host profile, name, location badges, duration
         hideEventTypeDetails: true,
