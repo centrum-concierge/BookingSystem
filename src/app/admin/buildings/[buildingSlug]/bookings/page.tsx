@@ -4,10 +4,11 @@ import React from "react";
 
 export const dynamic = "force-dynamic";
 
-async function fetchCalBookings(calcomUserId: string) {
+async function fetchCalBookings(calcomUsername: string) {
   const apiKey = process.env.CALCOM_API_KEY;
   if (!apiKey) throw new Error("Cal.com API key not set");
-  const res = await fetch(`https://api.cal.com/v2/bookings?userId=${calcomUserId}&take=100`, {
+  // Use username/slug in the API call if supported
+  const res = await fetch(`https://api.cal.com/v2/bookings?username=${calcomUsername}&take=100`, {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "cal-api-version": "2026-02-25",
@@ -24,7 +25,7 @@ export default async function BuildingBookingsPage({ params }: { params: { build
   let bookings: any[] = [];
   let error = null;
   try {
-    const data = await fetchCalBookings(building.calcomUserId);
+    const data = await fetchCalBookings(building.calcomUsername);
     bookings = data.data || [];
   } catch (e: any) {
     error = e.message;
