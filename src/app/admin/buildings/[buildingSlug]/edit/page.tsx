@@ -1,3 +1,13 @@
+            <label className="flex flex-col gap-2 text-sm font-medium text-[#1e2a27]">
+              Cal.com Building ID *
+              <input
+                name="calcomUserId"
+                required
+                defaultValue={building.calcomUserId}
+                placeholder="e.g. usr_abc123..."
+                className="rounded-xl border border-[#d4ede0] bg-[#f4faf7] px-4 py-3 outline-none transition focus:border-[#0a6d3c] focus:ring-1 focus:ring-[#0a6d3c]/20"
+              />
+            </label>
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";

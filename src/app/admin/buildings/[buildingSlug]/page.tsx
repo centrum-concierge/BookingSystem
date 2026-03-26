@@ -1,3 +1,9 @@
+              <Link
+                href={`/admin/buildings/${building.slug}/bookings`}
+                className="rounded-full border border-blue-200 px-5 py-2.5 text-sm font-semibold text-blue-700 transition duration-200 hover:bg-blue-50"
+              >
+                Bookings
+              </Link>
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";

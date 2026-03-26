@@ -34,6 +34,8 @@ async function uploadImage(file: File | null, storagePath: string): Promise<stri
 }
 
 export async function createBuildingAction(formData: FormData) {
+    const calcomUserId = getText(formData, "calcomUserId");
+    if (!calcomUserId) throw new Error("Cal.com Building ID is required.");
   const name = getText(formData, "name");
   if (!name) throw new Error("Building name is required.");
 
@@ -58,6 +60,7 @@ export async function createBuildingAction(formData: FormData) {
     description: getText(formData, "description"),
     images: uploadedImages.filter((p): p is string => Boolean(p)),
     amenities: [],
+    calcomUserId,
     createdAt: now,
     updatedAt: now,
   };
@@ -131,6 +134,8 @@ export async function findBuildingAction(formData: FormData) {
 }
 
 export async function updateBuildingAction(formData: FormData) {
+    const calcomUserId = getText(formData, "calcomUserId");
+    if (!calcomUserId) throw new Error("Cal.com Building ID is required.");
   const currentSlug = getText(formData, "currentSlug");
   const existing = await getBuildingBySlug(currentSlug);
   if (!existing) throw new Error("Building not found.");
@@ -152,6 +157,7 @@ export async function updateBuildingAction(formData: FormData) {
     location: getText(formData, "location"),
     description: getText(formData, "description"),
     images: [image1, image2].filter((p): p is string => Boolean(p)),
+    calcomUserId,
     updatedAt: now,
   });
 

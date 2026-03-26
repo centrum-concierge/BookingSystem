@@ -23,6 +23,7 @@ export type Building = {
   description: string;
   images: string[]; // Will contain [image_url] or []
   amenities: Amenity[];
+  calcomUserId: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -78,6 +79,7 @@ function rowToBuilding(row: any): Building {
     description: row.description ?? "",
     images,
     amenities,
+    calcomUserId: row.calcom_user_id ?? "",
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -124,6 +126,7 @@ export async function insertBuilding(building: Building): Promise<void> {
     location: building.location,
     description: building.description,
     image_url: building.images[0] ?? null,
+    calcom_user_id: building.calcomUserId,
     created_at: building.createdAt,
     updated_at: building.updatedAt,
   });
@@ -132,7 +135,7 @@ export async function insertBuilding(building: Building): Promise<void> {
 
 export async function updateBuilding(
   id: string,
-  fields: { slug: string; name: string; location: string; description: string; images: string[]; updatedAt: string }
+  fields: { slug: string; name: string; location: string; description: string; images: string[]; calcomUserId: string; updatedAt: string }
 ): Promise<void> {
   const { error } = await supabase
     .from("buildings")
@@ -142,6 +145,7 @@ export async function updateBuilding(
       location: fields.location,
       description: fields.description,
       image_url: fields.images[0] ?? null,
+      calcom_user_id: fields.calcomUserId,
       updated_at: fields.updatedAt,
     })
     .eq("id", id);
