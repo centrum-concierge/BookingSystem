@@ -1,9 +1,4 @@
-              <Link
-                href={`/admin/buildings/${building.slug}/bookings`}
-                className="rounded-full border border-blue-200 px-5 py-2.5 text-sm font-semibold text-blue-700 transition duration-200 hover:bg-blue-50"
-              >
-                Bookings
-              </Link>
+// ...existing code...
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -76,6 +71,12 @@ export default async function BuildingAdminPage({ params }: BuildingAdminPagePro
               <p className="mt-3 text-base leading-7 text-[#4a6358]">{building.description}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href={`/admin/buildings/${building.slug}/bookings`}
+                className="rounded-full border border-blue-200 px-5 py-2.5 text-sm font-semibold text-blue-700 transition duration-200 hover:bg-blue-50"
+              >
+                Bookings
+              </Link>
               <Link
                 href={`/admin/buildings/${building.slug}/amenities/new`}
                 className="rounded-full bg-[#0a6d3c] px-6 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#00a651]"
