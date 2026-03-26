@@ -20,8 +20,21 @@ async function fetchCalBookings(calcomUsername: string) {
 }
 
 export default async function BuildingBookingsPage({ params }: { params: { buildingSlug: string } }) {
+  // Debug: log the params
+  console.log('Bookings page hit. Params:', params);
   const building = await getBuildingBySlug(params.buildingSlug);
-  if (!building) notFound();
+  // Debug: log the building result
+  console.log('Building found:', building);
+  if (!building) {
+    return (
+      <main className="min-h-screen bg-[#f4faf7]">
+        <div className="mx-auto max-w-4xl px-6 py-10 md:px-10">
+          <h1 className="font-display text-3xl text-[#1e2a27] mb-6">404 - Building Not Found</h1>
+          <p>Params: {JSON.stringify(params)}</p>
+        </div>
+      </main>
+    );
+  }
   let bookings: any[] = [];
   let error = null;
   try {
@@ -35,6 +48,7 @@ export default async function BuildingBookingsPage({ params }: { params: { build
     <main className="min-h-screen bg-[#f4faf7]">
       <div className="mx-auto max-w-4xl px-6 py-10 md:px-10">
         <h1 className="font-display text-3xl text-[#1e2a27] mb-6">Bookings for {building.name}</h1>
+        <div className="mb-4 text-xs text-gray-500">Debug: Slug = {params.buildingSlug}, Cal.com Username = {building.calcomUsername}</div>
         {error && <div className="mb-4 text-red-600">Error: {error}</div>}
         <div className="rounded-xl bg-white p-6 shadow">
           {bookings.length === 0 ? (
