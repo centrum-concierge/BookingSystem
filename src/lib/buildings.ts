@@ -21,14 +21,14 @@ export type Building = {
   name: string;
   location: string;
   description: string;
-  images: string[];
+  images: string[]; // Will contain [image_url] or []
   amenities: Amenity[];
   createdAt: string;
   updatedAt: string;
 };
 
 const BUCKET = "media";
-const BUILDING_SELECT = `*, building_images(url, position), amenities(*, amenity_images(url, position))`;
+const BUILDING_SELECT = `*, amenities(*, amenity_images(url, position))`;
 
 export function slugify(input: string): string {
   return input
@@ -64,9 +64,8 @@ function rowToAmenity(row: any): Amenity {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToBuilding(row: any): Building {
-  const images = ((row.building_images ?? []) as { url: string; position: number }[])
-    .sort((a, b) => a.position - b.position)
-    .map((i) => i.url);
+  // Use image_url as a single-element array for compatibility
+  const images = row.image_url ? [row.image_url] : [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const amenities = ((row.amenities ?? []) as any[])
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -124,16 +123,11 @@ export async function insertBuilding(building: Building): Promise<void> {
     name: building.name,
     location: building.location,
     description: building.description,
+    image_url: building.images[0] ?? null,
     created_at: building.createdAt,
     updated_at: building.updatedAt,
   });
   if (error) throw new Error(error.message);
-  if (building.images.length > 0) {
-    const { error: imgError } = await supabase.from("building_images").insert(
-      building.images.map((url, position) => ({ building_id: building.id, url, position }))
-    );
-    if (imgError) throw new Error(imgError.message);
-  }
 }
 
 export async function updateBuilding(
@@ -142,16 +136,16 @@ export async function updateBuilding(
 ): Promise<void> {
   const { error } = await supabase
     .from("buildings")
-    .update({ slug: fields.slug, name: fields.name, location: fields.location, description: fields.description, updated_at: fields.updatedAt })
+    .update({
+      slug: fields.slug,
+      name: fields.name,
+      location: fields.location,
+      description: fields.description,
+      image_url: fields.images[0] ?? null,
+      updated_at: fields.updatedAt,
+    })
     .eq("id", id);
   if (error) throw new Error(error.message);
-  await supabase.from("building_images").delete().eq("building_id", id);
-  if (fields.images.length > 0) {
-    const { error: imgError } = await supabase.from("building_images").insert(
-      fields.images.map((url, position) => ({ building_id: id, url, position }))
-    );
-    if (imgError) throw new Error(imgError.message);
-  }
 }
 
 export async function deleteBuildingBySlug(slug: string): Promise<void> {
