@@ -1,12 +1,4 @@
-            <label className="flex flex-col gap-2 text-sm font-medium text-[#1e2a27]">
-              Cal.com Username (slug) *
-              <input
-                name="calcomUsername"
-                required
-                placeholder="e.g. tsawwassen"
-                className="rounded-xl border border-[#d4ede0] bg-[#f4faf7] px-4 py-3 outline-none transition focus:border-[#0a6d3c] focus:ring-1 focus:ring-[#0a6d3c]/20"
-              />
-            </label>
+
 import Image from "next/image";
 import Link from "next/link";
 import { createBuildingAction } from "@/app/admin/actions";
