@@ -11,8 +11,12 @@ type AmenityPageProps = {
 };
 
 export async function generateStaticParams() {
-  const buildings = await getBuildings();
-  return buildings.flatMap((b) => b.amenities.map((a) => ({ buildingSlug: b.slug, amenitySlug: a.slug })));
+  try {
+    const buildings = await getBuildings();
+    return buildings.flatMap((b) => b.amenities.map((a) => ({ buildingSlug: b.slug, amenitySlug: a.slug })));
+  } catch {
+    return [];
+  }
 }
 
 export default async function AmenityPage({ params }: AmenityPageProps) {
