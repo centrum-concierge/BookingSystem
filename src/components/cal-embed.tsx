@@ -22,11 +22,12 @@ export default function CalEmbed({ calLink }: CalEmbedProps) {
 
   useEffect(() => {
     (async () => {
-      const cal = await getCalApi({ namespace, embedLibUrl: EMBED_JS_URL });
+      const cal = await getCalApi({ namespace, embedJsUrl: EMBED_JS_URL });
       cal("ui", {
         // Use our brand green as the Cal accent color
         cssVarsPerTheme: {
           light: { "cal-brand": "#00a651" },
+          dark: { "cal-brand": "#00a651" },
         },
         // Hides the left panel: host profile, name, location badges, duration
         hideEventTypeDetails: true,

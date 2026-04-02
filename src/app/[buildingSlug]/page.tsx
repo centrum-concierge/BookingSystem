@@ -10,8 +10,12 @@ type BuildingPageProps = {
 };
 
 export async function generateStaticParams() {
-  const buildings = await getBuildings();
-  return buildings.map((b) => ({ buildingSlug: b.slug }));
+  try {
+    const buildings = await getBuildings();
+    return buildings.map((b) => ({ buildingSlug: b.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function BuildingPage({ params }: BuildingPageProps) {
