@@ -23,7 +23,6 @@ export type Building = {
   description: string;
   images: string[]; // Will contain [image_url] or []
   amenities: Amenity[];
-  calcomUsername: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -79,7 +78,6 @@ function rowToBuilding(row: any): Building {
     description: row.description ?? "",
     images,
     amenities,
-    calcomUsername: row.calcom_username ?? "",
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -88,12 +86,16 @@ function rowToBuilding(row: any): Building {
 // ---------- Reads ----------
 
 export async function getBuildings(): Promise<Building[]> {
-  const { data, error } = await supabase
-    .from("buildings")
-    .select(BUILDING_SELECT)
-    .order("created_at");
-  if (error) throw new Error(error.message);
-  return (data ?? []).map(rowToBuilding);
+  try {
+    const { data, error } = await supabase
+      .from("buildings")
+      .select(BUILDING_SELECT)
+      .order("created_at");
+    if (error) return [];
+    return (data ?? []).map(rowToBuilding);
+  } catch {
+    return [];
+  }
 }
 
 export async function getBuildingBySlug(slug: string): Promise<Building | undefined> {
@@ -126,7 +128,6 @@ export async function insertBuilding(building: Building): Promise<void> {
     location: building.location,
     description: building.description,
     image_url: building.images[0] ?? null,
-    calcom_username: building.calcomUsername,
     created_at: building.createdAt,
     updated_at: building.updatedAt,
   });
@@ -135,7 +136,7 @@ export async function insertBuilding(building: Building): Promise<void> {
 
 export async function updateBuilding(
   id: string,
-  fields: { slug: string; name: string; location: string; description: string; images: string[]; calcomUsername: string; updatedAt: string }
+  fields: { slug: string; name: string; location: string; description: string; images: string[]; updatedAt: string }
 ): Promise<void> {
   const { error } = await supabase
     .from("buildings")
@@ -145,7 +146,6 @@ export async function updateBuilding(
       location: fields.location,
       description: fields.description,
       image_url: fields.images[0] ?? null,
-      calcom_username: fields.calcomUsername,
       updated_at: fields.updatedAt,
     })
     .eq("id", id);
