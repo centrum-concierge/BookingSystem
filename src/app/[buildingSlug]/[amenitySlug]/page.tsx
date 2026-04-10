@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import BookingGate from "@/components/booking-gate";
 import { getBuildingBySlug, getBuildings } from "@/lib/buildings";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,16 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
   const amenity = building.amenities.find((a) => a.slug === amenitySlug);
   if (!amenity) notFound();
 
+  // Fetch logged-in user ID for Cal.com metadata — n8n uses this to look up the user
+  let userId: string | undefined;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    userId = user?.id ?? undefined;
+  } catch {
+    // Not authenticated — embed shown without metadata
+  }
+
   return (
     <main className="min-h-screen bg-[#f4faf7]">
       {/* Header */}
@@ -43,9 +54,9 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
           </Link>
           <Link
             href={`/${buildingSlug}`}
-            className="rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-white/10"
+            className="inline-flex max-w-[180px] items-center overflow-hidden rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-white/10 sm:max-w-none"
           >
-            ← {building.name}
+            <span className="truncate">← {building.name}</span>
           </Link>
         </div>
       </header>
@@ -103,6 +114,7 @@ export default async function AmenityPage({ params }: AmenityPageProps) {
                   calLink={amenity.calBookingLink}
                   termsAndConditions={amenity.termsAndConditions}
                   amenityName={amenity.name}
+                  userId={userId}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center px-8 py-16 text-center">

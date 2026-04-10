@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { deleteBuildingAction } from "@/app/admin/actions";
 import { logoutAction } from "@/app/admin/login/actions";
 import { getBuildings } from "@/lib/buildings";
 
@@ -24,18 +23,6 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              href="/admin/form-k"
-              className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-white/10"
-            >
-              Form K
-            </Link>
-            <Link
-              href="/admin/buildings/new"
-              className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-[#0a6d3c] transition duration-200 hover:bg-[#eef7f1]"
-            >
-              + Add Building
-            </Link>
             <form action={logoutAction}>
               <button
                 type="submit"
@@ -60,16 +47,10 @@ export default async function AdminDashboardPage() {
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#eef7f1]">
                 <span className="text-3xl">🏢</span>
               </div>
-              <h2 className="font-display text-3xl text-[#1e2a27]">No buildings yet</h2>
+              <h2 className="font-display text-3xl text-[#1e2a27]">No buildings found</h2>
               <p className="mt-3 text-base leading-7 text-[#4a6358]">
-                Add your first building to get started. Each building gets its own amenity listing page for residents.
+                Buildings are managed directly in the database. Once added, they will appear here for amenity management.
               </p>
-              <Link
-                href="/admin/buildings/new"
-                className="mt-8 inline-flex items-center rounded-full bg-[#0a6d3c] px-8 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#00a651]"
-              >
-                Add First Building
-              </Link>
             </div>
           </section>
         ) : (
@@ -105,23 +86,12 @@ export default async function AdminDashboardPage() {
                     <span className="text-xs font-semibold uppercase tracking-[0.28em] text-[#00a651]">
                       {building.amenities.length} {building.amenities.length === 1 ? "amenity" : "amenities"}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <form action={deleteBuildingAction}>
-                        <input type="hidden" name="slug" value={building.slug} />
-                        <button
-                          type="submit"
-                          className="rounded-full border border-[#e0e8e4] px-3 py-2.5 text-xs font-semibold text-[#4a6358] transition duration-200 hover:border-red-300 hover:text-red-600"
-                        >
-                          Remove
-                        </button>
-                      </form>
-                      <Link
-                        href={`/admin/buildings/${building.slug}`}
-                        className="rounded-full bg-[#0a6d3c] px-4 py-2.5 text-xs font-semibold text-white transition duration-200 hover:bg-[#00a651]"
-                      >
-                        Manage
-                      </Link>
-                    </div>
+                    <Link
+                      href={`/admin/buildings/${building.slug}`}
+                      className="rounded-full bg-[#0a6d3c] px-4 py-2.5 text-xs font-semibold text-white transition duration-200 hover:bg-[#00a651]"
+                    >
+                      Manage Amenities
+                    </Link>
                   </div>
                 </div>
               </article>

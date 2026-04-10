@@ -5,21 +5,15 @@ import {
   generateId,
   getBuildingByName,
   getBuildingBySlug,
-  insertBuilding,
-  updateBuilding,
-  deleteBuildingBySlug,
   insertAmenity,
   updateAmenity,
   deleteAmenityBySlug,
   uploadFile,
   slugify,
   type Amenity,
-  type Building,
 } from "@/lib/buildings";
 
-function getText(formData: FormData, key: string): string {
-  return String(formData.get(key) ?? "").trim();
-}
+import { getText } from "@/lib/form-utils";
 
 function getFile(formData: FormData, key: string): File | null {
   const value = formData.get(key);
@@ -31,45 +25,6 @@ async function uploadImage(file: File | null, storagePath: string): Promise<stri
   if (!file || file.size === 0) return null;
   const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-").toLowerCase()}`;
   return uploadFile(file, `${storagePath}/${safeName}`);
-}
-
-export async function createBuildingAction(formData: FormData) {
-  const name = getText(formData, "name");
-  if (!name) throw new Error("Building name is required.");
-
-  const slug = slugify(name);
-  const existing = await getBuildingBySlug(slug);
-  if (existing) throw new Error("A building with that name already exists.");
-
-  const primaryImage = getFile(formData, "buildingImage1");
-  if (!primaryImage) throw new Error("At least one building image is required.");
-
-  const uploadedImages = await Promise.all([
-    uploadImage(primaryImage, `buildings/${slug}`),
-    uploadImage(getFile(formData, "buildingImage2"), `buildings/${slug}`),
-  ]);
-
-  const now = new Date().toISOString();
-  const building: Building = {
-    id: generateId("building"),
-    slug,
-    name,
-    location: getText(formData, "location"),
-    description: getText(formData, "description"),
-    images: uploadedImages.filter((p): p is string => Boolean(p)),
-    amenities: [],
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  await insertBuilding(building);
-  redirect(`/admin/buildings/${slug}`);
-}
-
-export async function deleteBuildingAction(formData: FormData) {
-  const slug = getText(formData, "slug");
-  await deleteBuildingBySlug(slug);
-  redirect("/admin");
 }
 
 export async function createAmenityAction(formData: FormData) {
@@ -128,34 +83,6 @@ export async function findBuildingAction(formData: FormData) {
   if (!building) redirect(`/?error=not-found&name=${encodeURIComponent(name)}`);
 
   redirect(`/${building.slug}`);
-}
-
-export async function updateBuildingAction(formData: FormData) {
-  const currentSlug = getText(formData, "currentSlug");
-  const existing = await getBuildingBySlug(currentSlug);
-  if (!existing) throw new Error("Building not found.");
-
-  const name = getText(formData, "name") || existing.name;
-  const newSlug = slugify(name);
-
-  const image1 = getFile(formData, "buildingImage1")
-    ? await uploadImage(getFile(formData, "buildingImage1"), `buildings/${newSlug}`)
-    : (existing.images[0] ?? null);
-  const image2 = getFile(formData, "buildingImage2")
-    ? await uploadImage(getFile(formData, "buildingImage2"), `buildings/${newSlug}`)
-    : (existing.images[1] ?? null);
-
-  const now = new Date().toISOString();
-  await updateBuilding(existing.id, {
-    slug: newSlug,
-    name,
-    location: getText(formData, "location"),
-    description: getText(formData, "description"),
-    images: [image1, image2].filter((p): p is string => Boolean(p)),
-    updatedAt: now,
-  });
-
-  redirect(`/admin/buildings/${newSlug}`);
 }
 
 export async function updateAmenityAction(formData: FormData) {

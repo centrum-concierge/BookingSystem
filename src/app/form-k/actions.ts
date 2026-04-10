@@ -2,10 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { insertFormKSubmission } from "@/lib/form-k";
-
-function getText(formData: FormData, key: string): string {
-  return String(formData.get(key) ?? "").trim();
-}
+import { getText } from "@/lib/form-utils";
 
 export async function submitFormKAction(formData: FormData) {
   const buildingId = getText(formData, "buildingId");

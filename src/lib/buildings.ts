@@ -2,6 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { supabase } from "./supabase";
+import type { AmenityRow, BuildingRow } from "@/types/database";
 
 export type Amenity = {
   id: string;
@@ -16,19 +17,22 @@ export type Amenity = {
 };
 
 export type Building = {
+  // id is the DB int8 stringified (e.g. "1", "2")
   id: string;
+  // slug is derived from name — no slug column in DB
   slug: string;
   name: string;
+  // mapped from DB "address" column
   location: string;
   description: string;
-  images: string[]; // Will contain [image_url] or []
+  images: string[];
   amenities: Amenity[];
   createdAt: string;
-  updatedAt: string;
 };
 
 const BUCKET = "media";
-const BUILDING_SELECT = `*, amenities(*, amenity_images(url, position))`;
+// Only select columns that actually exist in the DB
+const BUILDING_SELECT = `id, name, address, strata_plan, created_at, amenities(*, amenity_images(url, position))`;
 
 export function slugify(input: string): string {
   return input
@@ -44,8 +48,7 @@ export function generateId(prefix: string): string {
 
 // ---------- Row mappers ----------
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToAmenity(row: any): Amenity {
+function rowToAmenity(row: AmenityRow): Amenity {
   const images = ((row.amenity_images ?? []) as { url: string; position: number }[])
     .sort((a, b) => a.position - b.position)
     .map((i) => i.url);
@@ -62,24 +65,19 @@ function rowToAmenity(row: any): Amenity {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToBuilding(row: any): Building {
-  // Use image_url as a single-element array for compatibility
-  const images = row.image_url ? [row.image_url] : [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const amenities = ((row.amenities ?? []) as any[])
+function rowToBuilding(row: BuildingRow): Building {
+  const amenities = (row.amenities ?? [])
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     .map(rowToAmenity);
   return {
-    id: row.id,
-    slug: row.slug,
+    id: String(row.id),          // int8 → string
+    slug: slugify(row.name),     // derived — no slug column in DB
     name: row.name,
-    location: row.location ?? "",
-    description: row.description ?? "",
-    images,
+    location: row.address ?? "", // DB column is "address"
+    description: "",             // no description column in DB
+    images: [],                  // no image column in DB
     amenities,
     createdAt: row.created_at,
-    updatedAt: row.updated_at,
   };
 }
 
@@ -93,19 +91,16 @@ export async function getBuildings(): Promise<Building[]> {
       .order("created_at");
     if (error) return [];
     return (data ?? []).map(rowToBuilding);
-  } catch {
+  } catch (e) {
+    console.error("[buildings] Failed to fetch buildings:", e);
     return [];
   }
 }
 
 export async function getBuildingBySlug(slug: string): Promise<Building | undefined> {
-  const { data, error } = await supabase
-    .from("buildings")
-    .select(BUILDING_SELECT)
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return data ? rowToBuilding(data) : undefined;
+  // No slug column in DB — fetch all and match by derived slug
+  const buildings = await getBuildings();
+  return buildings.find((b) => b.slug === slug);
 }
 
 export async function getBuildingByName(name: string): Promise<Building | undefined> {
@@ -118,51 +113,15 @@ export async function getBuildingByName(name: string): Promise<Building | undefi
   return data ? rowToBuilding(data) : undefined;
 }
 
-// ---------- Building writes ----------
-
-export async function insertBuilding(building: Building): Promise<void> {
-  const { error } = await supabase.from("buildings").insert({
-    id: building.id,
-    slug: building.slug,
-    name: building.name,
-    location: building.location,
-    description: building.description,
-    image_url: building.images[0] ?? null,
-    created_at: building.createdAt,
-    updated_at: building.updatedAt,
-  });
-  if (error) throw new Error(error.message);
-}
-
-export async function updateBuilding(
-  id: string,
-  fields: { slug: string; name: string; location: string; description: string; images: string[]; updatedAt: string }
-): Promise<void> {
-  const { error } = await supabase
-    .from("buildings")
-    .update({
-      slug: fields.slug,
-      name: fields.name,
-      location: fields.location,
-      description: fields.description,
-      image_url: fields.images[0] ?? null,
-      updated_at: fields.updatedAt,
-    })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
-}
-
-export async function deleteBuildingBySlug(slug: string): Promise<void> {
-  const { error } = await supabase.from("buildings").delete().eq("slug", slug);
-  if (error) throw new Error(error.message);
-}
+// Note: building writes (insert/update/delete) are intentionally omitted.
+// Buildings are managed directly in the database; the admin is read-only for buildings.
 
 // ---------- Amenity writes ----------
 
 export async function insertAmenity(buildingId: string, amenity: Amenity): Promise<void> {
   const { error } = await supabase.from("amenities").insert({
     id: amenity.id,
-    building_id: buildingId,
+    building_id: parseInt(buildingId, 10), // buildings.id is int8
     slug: amenity.slug,
     name: amenity.name,
     description: amenity.description,
@@ -206,19 +165,26 @@ export async function updateAmenity(
 }
 
 export async function deleteAmenityBySlug(buildingSlug: string, amenitySlug: string): Promise<void> {
-  const { data: building, error: bErr } = await supabase
-    .from("buildings")
-    .select("id")
-    .eq("slug", buildingSlug)
-    .maybeSingle();
-  if (bErr) throw new Error(bErr.message);
+  // No slug column in buildings — find by derived slug
+  const buildings = await getBuildings();
+  const building = buildings.find((b) => b.slug === buildingSlug);
   if (!building) throw new Error("Building not found.");
   const { error } = await supabase
     .from("amenities")
     .delete()
-    .eq("building_id", building.id)
+    .eq("building_id", parseInt(building.id, 10))
     .eq("slug", amenitySlug);
   if (error) throw new Error(error.message);
+}
+
+export async function getAmenitiesForBuilding(buildingId: number): Promise<Amenity[]> {
+  const { data, error } = await supabase
+    .from("amenities")
+    .select("*, amenity_images(url, position)")
+    .eq("building_id", buildingId)
+    .order("created_at");
+  if (error) return [];
+  return (data ?? []).map(rowToAmenity);
 }
 
 // ---------- Storage ----------

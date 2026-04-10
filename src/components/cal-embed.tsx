@@ -8,9 +8,10 @@ const EMBED_JS_URL = "https://cal.centrumbookings.com/embed/embed.js";
 
 type CalEmbedProps = {
   calLink: string;
+  userId?: string;
 };
 
-export default function CalEmbed({ calLink }: CalEmbedProps) {
+export default function CalEmbed({ calLink, userId }: CalEmbedProps) {
   // Strip any full URL prefix — only keep the path portion (e.g. "dsenteu/bbq")
   const cleanLink = calLink
     .replace(/^https?:\/\/[^/]+\//, "")
@@ -43,7 +44,11 @@ export default function CalEmbed({ calLink }: CalEmbedProps) {
       calOrigin={CAL_ORIGIN}
       embedJsUrl={EMBED_JS_URL}
       style={{ width: "100%", height: "100%", minHeight: "700px" }}
-      config={{ layout: "month_view", useSlotsViewOnSmallScreen: "true" }}
+      config={{
+        layout: "month_view",
+        useSlotsViewOnSmallScreen: "true",
+        ...(userId ? { "metadata[userId]": userId } : {}),
+      }}
     />
   );
 }

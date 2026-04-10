@@ -83,3 +83,12 @@ button {
 .font-display {
   font-family: var(--font-playfair-display), Georgia, serif;
 }
+
+/* ---- Prevent iOS Safari from auto-zooming on input focus (< 16px triggers zoom) ---- */
+@media screen and (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -22,6 +22,12 @@ export const metadata: Metadata = {
   description: "Online amenity bookings for your building, powered by Centrum Concierge & Security.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,11 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Preload home video so it starts playing immediately on first visit */}
-        <link rel="preload" as="video" href="/videos/home_video.mp4" type="video/mp4" />
-      </head>
+      <head></head>
       <body
+        suppressHydrationWarning
         className={`${manrope.variable} ${playfairDisplay.variable} ${geistMono.variable} antialiased`}
       >
         {children}

@@ -2,6 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { supabase } from "./supabase";
+import type { FormKTenantRow, FormKSubmissionRow, FormKRow, FormKSummaryRow } from "@/types/database";
 
 export type FormKTenant = {
   id: string;
@@ -34,8 +35,7 @@ export type FormKSubmission = {
   tenants: FormKTenant[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToTenant(row: any): FormKTenant {
+function rowToTenant(row: FormKTenantRow): FormKTenant {
   return {
     id: row.id,
     submissionId: row.submission_id,
@@ -48,8 +48,7 @@ function rowToTenant(row: any): FormKTenant {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToSubmission(row: any): FormKSubmission {
+function rowToSubmission(row: FormKSubmissionRow): FormKSubmission {
   return {
     id: row.id,
     buildingId: row.building_id,
@@ -71,6 +70,59 @@ function rowToSubmission(row: any): FormKSubmission {
   };
 }
 
+export type FormKRecord = {
+  id: string
+  tenancyCommencing: string | null
+  signatureTenant: string | null
+  signatureOwner: string | null
+  status: string
+  createdAt: string
+  formKFile: string | null
+  tenantName: string
+  tenantEmail: string
+  tenantPhone: string
+  ownerFullName: string
+  ownerAddress: string
+  unitNumber: string
+  buildingName: string
+  buildingAddress: string
+  strataPlan: string
+}
+
+export async function getFormKById(id: string): Promise<FormKRecord | null> {
+  const { data, error } = await supabase
+    .from('form_k')
+    .select(`
+      id, tenancy_commencing, signature_tenant, signature_owner, status, created_at, form_k_file,
+      tenants!form_k_tenants_fkey ( name, phone_number, email ),
+      owners ( full_name, phone_number, current_address ),
+      units!unit ( unit_number, strata_lot, buildings!building ( name, address, strata_plan ) )
+    `)
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  if (!data) return null
+  const d = data as FormKRow
+  return {
+    id: d.id,
+    tenancyCommencing: d.tenancy_commencing ?? null,
+    signatureTenant: d.signature_tenant ?? null,
+    signatureOwner: d.signature_owner ?? null,
+    status: d.status ?? 'pending',
+    createdAt: d.created_at,
+    formKFile: d.form_k_file ?? null,
+    tenantName: d.tenants?.name ?? '',
+    tenantEmail: d.tenants?.email ?? '',
+    tenantPhone: d.tenants?.phone_number ? String(d.tenants.phone_number) : '',
+    ownerFullName: d.owners?.full_name ?? '',
+    ownerAddress: d.owners?.current_address ?? '',
+    unitNumber: d.units?.unit_number ? String(d.units.unit_number) : '',
+    buildingName: d.units?.buildings?.name ?? '',
+    buildingAddress: d.units?.buildings?.address ?? '',
+    strataPlan: d.units?.buildings?.strata_plan ?? '',
+  }
+}
+
 export async function getFormKSubmissions(): Promise<FormKSubmission[]> {
   const { data, error } = await supabase
     .from("form_k_submissions")
@@ -88,6 +140,31 @@ export async function getFormKSubmissionById(id: string): Promise<FormKSubmissio
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
+  return rowToSubmission(data);
+}
+
+// Looks up a form_k row by its ID, then follows k-form_id to get the full submission
+export async function getFormKSubmissionByFormKId(formKId: string): Promise<FormKSubmission | null> {
+  // Select all columns so the hyphenated "k-form_id" column is included
+  const { data: formKRow } = await supabase
+    .from("form_k")
+    .select("*")
+    .eq("id", formKId)
+    .maybeSingle();
+
+  if (!formKRow) return null;
+
+  const submissionId: string | null = (formKRow as FormKRow)["k-form_id"] ?? null;
+
+  // If no linked submission, fall back to rendering what we have from form_k alone
+  if (!submissionId) return null;
+
+  const { data, error } = await supabase
+    .from("form_k_submissions")
+    .select("*, buildings(name), tenants(*)")
+    .eq("id", submissionId)
+    .maybeSingle();
+  if (error || !data) return null;
   return rowToSubmission(data);
 }
 

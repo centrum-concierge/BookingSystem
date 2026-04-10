@@ -2,23 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { logoutAction } from "@/app/admin/login/actions";
 import { getFormKSubmissions } from "@/lib/form-k";
+import { FormStatusBadge } from "@/components/ui/badges";
 
 export const dynamic = "force-dynamic";
-
-function StatusBadge({ status }: { status: string }) {
-  if (status === "confirmed") {
-    return (
-      <span className="inline-flex items-center rounded-full bg-[#eef7f1] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#0a6d3c]">
-        Confirmed
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
-      Pending
-    </span>
-  );
-}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
@@ -104,7 +90,7 @@ export default async function AdminFormKListPage() {
                         {s.tenants.map((t) => t.fullName).join(", ") || "—"}
                       </td>
                       <td className="px-6 py-4">
-                        <StatusBadge status={s.status} />
+                        <FormStatusBadge status={s.status} />
                       </td>
                       <td className="px-6 py-4">
                         <Link

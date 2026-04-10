@@ -7,21 +7,22 @@ type BookingGateProps = {
   calLink: string;
   termsAndConditions?: string;
   amenityName: string;
+  userId?: string;
 };
 
-export default function BookingGate({ calLink, termsAndConditions, amenityName }: BookingGateProps) {
+export default function BookingGate({ calLink, termsAndConditions, amenityName, userId }: BookingGateProps) {
   const [agreed, setAgreed] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
 
   // No T&C set — go straight to the calendar
   if (!termsAndConditions) {
-    return <CalEmbed calLink={calLink} />;
+    return <CalEmbed calLink={calLink} userId={userId} />;
   }
 
   // User has accepted — show the calendar
   if (confirmed) {
-    return <CalEmbed calLink={calLink} />;
+    return <CalEmbed calLink={calLink} userId={userId} />;
   }
 
   return (

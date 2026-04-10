@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getBuildings } from "@/lib/buildings";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Re-generate at most once per hour
 
 type BuildingPageProps = {
   params: Promise<{ buildingSlug: string }>;
@@ -66,7 +66,7 @@ export default async function BuildingPage({ params }: BuildingPageProps) {
                 {building.location}
               </span>
             ) : null}
-            <h1 className="font-display text-4xl text-white md:text-5xl lg:text-6xl">{building.name}</h1>
+            <h1 className="font-display text-3xl text-white sm:text-4xl md:text-5xl lg:text-6xl">{building.name}</h1>
           </div>
         </div>
       </div>

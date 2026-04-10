@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { deleteAmenityAction, deleteBuildingAction } from "@/app/admin/actions";
+import { deleteAmenityAction } from "@/app/admin/actions";
 import { getBuildingBySlug, getBuildings } from "@/lib/buildings";
 
 export const dynamic = "force-dynamic";
@@ -76,32 +76,11 @@ export default async function BuildingAdminPage({ params }: BuildingAdminPagePro
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href={`/admin/buildings/${building.slug}/bookings`}
-                className="rounded-full border border-blue-200 px-5 py-2.5 text-sm font-semibold text-blue-700 transition duration-200 hover:bg-blue-50"
-              >
-                Bookings
-              </Link>
-              <Link
                 href={`/admin/buildings/${building.slug}/amenities/new`}
                 className="rounded-full bg-[#0a6d3c] px-6 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#00a651]"
               >
                 + Add Amenity
               </Link>
-              <Link
-                href={`/admin/buildings/${building.slug}/edit`}
-                className="rounded-full border border-[#d4ede0] px-5 py-2.5 text-sm font-semibold text-[#0a6d3c] transition duration-200 hover:bg-[#eef7f1]"
-              >
-                Edit Building
-              </Link>
-              <form action={deleteBuildingAction}>
-                <input type="hidden" name="slug" value={building.slug} />
-                <button
-                  type="submit"
-                  className="rounded-full border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition duration-200 hover:bg-red-50"
-                >
-                  Remove Building
-                </button>
-              </form>
             </div>
           </div>
         </section>
